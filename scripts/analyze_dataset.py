@@ -1,8 +1,6 @@
 import argparse
 from collections import defaultdict
 
-from datasets import load_dataset
-from transformers import AutoTokenizer
 
 
 def parse_args():
@@ -28,6 +26,11 @@ def parse_args():
 
 def main():
     args = parse_args()
+
+    # Import heavy dependencies lazily so the help command works even if they
+    # are not installed.
+    from datasets import load_dataset
+    from transformers import AutoTokenizer
 
     # Load the dataset. This will download the split if not already present.
     data = load_dataset("ccdv/arxiv-classification", "no_ref", split=args.split)
