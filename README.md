@@ -10,7 +10,7 @@ Each dataset entry provides the full paper in the `text` field and an integer `l
 Install the dependencies with:
 
 ```bash
-pip install datasets transformers
+uv pip install -r requirements.txt
 ```
 
 ### Usage
