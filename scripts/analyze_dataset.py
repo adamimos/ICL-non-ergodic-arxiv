@@ -2,9 +2,17 @@ import argparse
 from collections import defaultdict
 
 
-
 def parse_args():
-    parser = argparse.ArgumentParser(description="Analyze token counts per arXiv category")
+    """Parse command line arguments for dataset analysis.
+
+    Returns
+    -------
+    argparse.Namespace
+        Parsed command line arguments.
+    """
+    parser = argparse.ArgumentParser(
+        description="Analyze token counts per arXiv category"
+    )
     parser.add_argument(
         "--top_n",
         type=int,
@@ -25,6 +33,7 @@ def parse_args():
 
 
 def main():
+    """Run the dataset analysis workflow."""
     args = parse_args()
 
     # Import heavy dependencies lazily so the help command works even if they
@@ -33,7 +42,11 @@ def main():
     from transformers import AutoTokenizer
 
     # Load the dataset. This will download the split if not already present.
-    data = load_dataset("ccdv/arxiv-classification", "no_ref", split=args.split)
+    data = load_dataset(
+        "ccdv/arxiv-classification",
+        "no_ref",
+        split=args.split,
+    )
 
     # Map integer labels to their string names for readability
     label_names = data.features["label"].names
@@ -52,12 +65,19 @@ def main():
             token_counts[label] += n_tokens
 
     # Sort by token count in descending order.
-    sorted_counts = sorted(token_counts.items(), key=lambda x: x[1], reverse=True)
+    sorted_counts = sorted(
+        token_counts.items(),
+        key=lambda x: x[1],
+        reverse=True,
+    )
 
     if args.top_n is not None:
         sorted_counts = sorted_counts[: args.top_n]
 
-    print(f"Top {len(sorted_counts)} categories by token volume in split '{args.split}':")
+    print(
+        f"Top {len(sorted_counts)} categories by token volume in "
+        f"split '{args.split}':"
+    )
     for cat, count in sorted_counts:
         print(f"{cat}\t{count}")
 
